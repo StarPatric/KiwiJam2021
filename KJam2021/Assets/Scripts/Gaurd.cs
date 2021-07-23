@@ -8,6 +8,10 @@ public class Gaurd : MonoBehaviour
     [SerializeField] Transform[] pathRoute; //This is simple to get the prototype working
     [SerializeField] float speed = 0.15f;
 
+    [Header("Goals")]
+    [SerializeField] bool hasKey;
+    private GameObject key;
+
     int pathingPoint = 0; //Point I am going to 
 
     enum AIStates
@@ -24,7 +28,11 @@ public class Gaurd : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (hasKey)
+        {
+            key = Resources.Load<GameObject>("key");
+            key.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -44,7 +52,7 @@ public class Gaurd : MonoBehaviour
 
     void pathing()
     {
-        transform.position = Vector3.Lerp(transform.position, pathRoute[pathingPoint].position, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, pathRoute[pathingPoint].position, speed * Time.deltaTime);
         //Arrived
         if (Vector3.Distance(transform.position, pathRoute[pathingPoint].position) < 0.5f)
         {
@@ -57,6 +65,12 @@ public class Gaurd : MonoBehaviour
     {
         Debug.Log("OW!");
         currentState = AIStates.stunned;
+
+        if (hasKey)
+        {
+            //key.SetActive(true);
+           // Utilities.animateToPoint(key, GameObject.Find("KeyPoint").transform.position, transform.position, 100.0f);
+        }
     }
 
     void OnDrawGizmosSelected()
